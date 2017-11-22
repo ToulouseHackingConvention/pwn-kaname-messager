@@ -11,8 +11,8 @@
 struct User {
     int is_admin;
     int is_active;
-    char* name;
-    char* passwd;
+    char name[MAX_LEN+1];
+    char passwd[MAX_LEN+1];
 };
 struct Message {
     char* message;
@@ -82,8 +82,6 @@ void init_prog() {
         malloc_fail();
     }
 
-    firstuser->name = malloc(sizeof(char) * (strlen(DEFAULT_USER) + 1)); 
-    firstuser->passwd = malloc(sizeof(char) * (strlen(passwd) + 1));
     strncpy(firstuser->name, DEFAULT_USER, strlen(DEFAULT_USER) + 1);
     strncpy(firstuser->passwd, passwd, strlen(passwd) + 1);
     firstuser->is_admin = 1;
@@ -120,10 +118,8 @@ int change_passwd(struct User* user) {
         return 1;
     }
 
-    if (user->passwd != NULL) {
-        free(user->passwd);
-    }
-    user->passwd = buff;
+    strcpy(user->passwd, buff);
+    free(buff);
     return 0;
 }
 
@@ -151,8 +147,7 @@ int create_new_user() {
         return 1;
     }
 
-    new_user->name = buff;
-    new_user->passwd = NULL;
+    strcpy(new_user->name, buff);
     new_user->is_admin = 0;
     new_user->is_active = 0;
 
@@ -167,6 +162,7 @@ int create_new_user() {
     nb_user += 1;
 
     printf("User created : %s\n", new_user->name);
+    free(buff);
     return 0;
 }
 
@@ -227,8 +223,8 @@ void change_user_admin() {
                 return ;
             }
 
-            free(users[user]->name);
-            users[user]->name = buffer;
+            strcpy(users[user]->name, buffer);
+            free(buffer);
             break;
         case 2:
             change_passwd(users[user]);
@@ -240,8 +236,6 @@ void change_user_admin() {
 }
 
 void remove_user(int user) {
-    free(users[user]->passwd);
-    free(users[user]->name);
     free(users[user]);
     nb_user -= 1;
     users[user] = users[nb_user];
@@ -267,7 +261,7 @@ void show_my_data(struct User* user) {
     printf("Username : %s\n"
            "Password : %s\n\n",
            user->name,
-           user->passwd);
+        user->passwd);
 }
 
 void list_messages() {
