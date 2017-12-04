@@ -1,10 +1,7 @@
+Author : Kaname
+Docker image : pwn-kaname-messager
+Challenge name (can be changed) : messager128
 
-Creator : Kaname
-Name docker image : pwn-kaname-messager
-Name challenge (can be change) : messager128 
-
-Categorie : pwn / reverse
+Category : pwn / reverse
 
 Goal : find manager passwd
-
-

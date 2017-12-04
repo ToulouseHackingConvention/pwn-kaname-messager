@@ -23,11 +23,11 @@ struct User* users[MAX_USER] = {0};
 struct Message *messages = NULL;
 
 void malloc_fail() {
-    perror("Malloc fail, exit ...");
+    perror("malloc() failed, exiting ...");
     exit(1);
 }
 
-char* bool_to_string(int i) {
+const char* bool_to_string(int i) {
     if (i) {
         return "True";
     } else {
@@ -71,7 +71,7 @@ void init_prog() {
     char* passwd = NULL; 
     struct User* firstuser = NULL;
 
-    passwd = getenv ("DEFAULT_PASSWD");
+    passwd = getenv("DEFAULT_PASSWD");
     if (passwd == NULL) {
         perror("No default password for root");
         exit(1);
@@ -109,11 +109,11 @@ int change_passwd(struct User* user) {
     buff = get_input(NULL, "Enter password : ");
 
     if (strlen(buff) < PASS_MIN) {
-        printf("Too small password.\n");
+        printf("Password too short.\n");
         free(buff);
         return 1;
     } else if (strlen(buff) > PASS_MAX) {
-        printf("Too long password.\n");
+        printf("Password too long.\n");
         free(buff);
         return 1;
     }
@@ -141,7 +141,7 @@ int create_new_user() {
     buff = get_input(NULL, "Enter username : ");
 
     if (search_user(buff) >= 0){
-        printf("Username already use\n.");
+        printf("Username already used\n.");
         free(buff);
         free(new_user);
         return 1;
@@ -185,7 +185,7 @@ void change_user_admin() {
 
     user = search_user(buff);
     if (user < 0 || user >= nb_user) {
-        printf("Not found user\n");
+        printf("User not found\n");
         return;
     }
     
@@ -218,7 +218,7 @@ void change_user_admin() {
             buffer = get_input(NULL, "Enter username : ");
 
             if (search_user(buffer) >= 0){
-                printf("Username already use.\n");
+                printf("Username already used.\n");
                 free(buffer);
                 return ;
             }
@@ -243,7 +243,6 @@ void remove_user(int user) {
 }
 
 void remove_user_admin() {
-
     char buff[MAX_LEN +1] = {0};
     int user;
     
@@ -251,7 +250,7 @@ void remove_user_admin() {
 
     user = search_user(buff);
     if (user < 0 || user >= nb_user) {
-        printf("Not found user\n");
+        printf("User not found\n");
     } else {
         remove_user(user);
     }
@@ -332,7 +331,7 @@ void menu(int user_id) {
                 case 0:
                     return;
                 default:
-                    printf("Unknow options.\n");
+                    printf("Unknown option.\n");
             }
         } else if (users[user_id]->is_active) {
             printf("Actions :\n"
@@ -362,10 +361,10 @@ void menu(int user_id) {
                 case 0:
                     return;
                 default:
-                    printf("Unknow options.\n");
+                    printf("Unknown option.\n");
             }
         } else {
-            printf("Your accounts was not activate.\n"
+            printf("Your account is not activated.\n"
                    "Please contact an admin to activate it\n"
                    "Actions :\n"
                    " 1 : change password\n"
@@ -382,7 +381,7 @@ void menu(int user_id) {
                 case 0:
                     return;
                 default:
-                    printf("Unknow options.\n");
+                    printf("Unknown option.\n");
             }
         }
     }
@@ -397,7 +396,7 @@ void login() {
     get_input(buff, "Username : ");
     user = search_user(buff);
     if (user < 0 || user >= nb_user || (users[user]->is_admin && !users[user]->is_active)) {
-        printf("Not found user\n");
+        printf("User not found\n");
         return;
     }
     strcpy(passwd_to_verify, users[user]->passwd);
@@ -405,7 +404,7 @@ void login() {
     get_input(buff, "Password : ");
 
     if (!strncmp(buff, passwd_to_verify, PASS_MAX)) {
-        printf("Success login with %s\n", users[user]->name);
+        printf("Successfully logged in as %s\n", users[user]->name);
         menu(user);
     } else {
         printf("Invalid password.\n");
@@ -421,7 +420,7 @@ int main() {
         choice = -1;
 
         printf("\n\n"
-               "Please choose an option between the follow : \n"
+               "Please choose an option between the following : \n"
                " 1 : create an user\n"
                " 2 : login\n"
                " 0 : exit\n"
@@ -441,7 +440,7 @@ int main() {
                 login();
                 break;
             default:
-                printf("Unknow options.\n");
+                printf("Unknown option.\n");
         }
     }
 }
