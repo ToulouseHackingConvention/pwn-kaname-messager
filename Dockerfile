@@ -3,7 +3,8 @@ FROM debian:stretch
 ARG WD="/srv"
 ARG SRC="${WD}/src"
 
-RUN apt-get update && \
+RUN dpkg --add-architecture i386 &&\
+    apt-get update && \
     apt-get -y upgrade && \
     apt-get install -y socat && \
     useradd -s /bin/nologin chall
@@ -11,13 +12,10 @@ RUN apt-get update && \
 WORKDIR $WD
 
 # Compilation
-RUN apt-get install -y gcc gcc-multilib # change order for dev
 
-RUN dpkg --add-architecture i386 &&\
-    apt-get update &&\
-    apt-get install -y libstdc++6:i386 libgcc1:i386 build-essential
 ADD src/ "$SRC/"
-RUN gcc "${SRC}/messager.c" -o messager -m32 -fno-stack-protector && \
+RUN apt-get install -y gcc gcc-multilib libstdc++6:i386 libgcc1:i386 &&\
+    gcc "${SRC}/messager.c" -o messager -m32 -fno-stack-protector && \
     rm -rf "$SRC" && \
     apt-get purge -y --auto-remove gcc
 
